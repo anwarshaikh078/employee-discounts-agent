@@ -14,12 +14,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY main.py .
 COPY agents.py .
 COPY tools.py .
+COPY cloud_storage.py .
+
+# Copy HTML UI
+COPY index.html .
 
 # Copy PDF documents
 COPY pdfs/ ./pdfs/
-
-# Create __init__ files for packages
-RUN touch __init__.py
 
 # Expose port
 EXPOSE 8080
