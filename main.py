@@ -21,6 +21,7 @@ import os
 
 from agents import PDFSearchAgent, FilterAgent, ResponseGeneratorAgent
 from tools import RAGTools, PDFProcessor
+from fastapi.middleware.cors import CORSMiddleware
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -31,6 +32,15 @@ app = FastAPI(
     title="Employee Discounts Agent",
     description="Multi-agent system for employee discount search using RAG",
     version="1.0.0"
+)
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Request/Response models
@@ -68,8 +78,10 @@ async def startup_event():
     
     try:
         # Initialize RAG tools
-        rag_tools = RAGTools(pdf_directory="./pdfs")
-        logger.info("✅ RAG tools initialized")
+        import os
+        pdf_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "pdfs")
+        rag_tools = RAGTools(pdf_directory=pdf_dir)
+        logger.info(f"✅ RAG tools initialized from: {pdf_dir}")
         
         # Initialize agents
         pdf_search_agent = PDFSearchAgent(rag_tools=rag_tools)

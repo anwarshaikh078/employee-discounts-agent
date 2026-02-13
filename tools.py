@@ -226,12 +226,24 @@ class RAGTools:
         """
         IMPROVED Search with proper full-text matching
         Works with both TXT and PDF files
+        Handles natural language queries by filtering stop words
         """
         logger.info(f"🔍 Searching for: '{query}'")
         
-        query_lower = query.lower()
-        query_words = set(word for word in query_lower.split() if len(word) > 2)
+        # Remove punctuation from query
+        import string
+        query_clean = query.translate(str.maketrans('', '', string.punctuation))
+        query_lower = query_clean.lower()
         
+        # Extract key terms - remove common stop words
+        stop_words = {'i', 'do', 'have', 'any', 'the', 'a', 'an', 'and', 'or', 'for', 'in', 'on', 'at', 'to', 'is', 'are', 'be', 'been', 'being', 'am', 'was', 'were', 'has', 'had', 'having', 'does', 'did', 'doing', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'will', 'shall', 'that', 'what', 'which', 'who', 'when', 'where', 'why', 'how', 'all', 'each', 'every', 'both', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 'just', 'as', 'if', 'about', 'of', 'by', 'with', 'from', 'up', 'out', 'it', 'its', 'they', 'them', 'their', 'theirs', 'this', 'these', 'those', 'my', 'we', 'you', 'he', 'she', 'him', 'her', 'hers', 'yours', 'ours'}
+        query_words = set(word for word in query_lower.split() if len(word) > 2 and word not in stop_words)
+        
+        # If no key words found after filtering, use all words
+        if not query_words:
+            query_words = set(word for word in query_lower.split() if len(word) > 2)
+        
+        logger.info(f"📍 Keywords to search: {query_words}")
         results_with_scores = []
         
         # Score each discount
@@ -251,20 +263,13 @@ class RAGTools:
                 score = 80.0
                 logger.info(f"✅ Name match: {metadata['name']}")
             
-            # 3. WORD MATCHING
+            # 3. WORD MATCHING - check if any keyword is in the name
             else:
-                name_words = set(word for word in name.split() if len(word) > 2)
-                matching_words = len(query_words.intersection(name_words))
-                
-                if matching_words > 0:
-                    match_percentage = (matching_words / len(query_words)) * 100
-                    score = match_percentage * 0.6
-                    logger.info(f"⭐ Partial match ({matching_words} words): {metadata['name']}")
-            
-            # 4. CATEGORY MATCH - 20 bonus points
-            if any(word in category for word in query_words):
-                score += 20.0
-                logger.info(f"📁 Category match: {metadata['name']}")
+                for keyword in query_words:
+                    if keyword in name:
+                        score = 60.0
+                        logger.info(f"⭐ Keyword match '{keyword}': {metadata['name']}")
+                        break
             
             if score > 0:
                 results_with_scores.append((filename, metadata, score))

@@ -49,8 +49,8 @@ class PDFSearchAgent(BaseAgent):
         self.logger.info(f"🔍 [Agent 1] Searching PDFs for: '{query}'")
         
         try:
-            # Use RAG tools to search with smarter matching
-            results = await self.rag_tools.search_pdfs_smart(query)
+            # Use RAG tools to search
+            results = await self.rag_tools.search_pdfs(query)
             
             # Filter by category if provided
             if category_filter:
@@ -59,9 +59,6 @@ class PDFSearchAgent(BaseAgent):
                     if r.get('category', '').lower() == category_filter.lower()
                 ]
                 self.logger.info(f"📁 Filtered to {len(results)} results in '{category_filter}'")
-            
-            # Limit to top 5 results for better UX
-            results = results[:5]
             
             self.logger.info(f"✅ [Agent 1] Found {len(results)} matches")
             return results

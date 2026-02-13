@@ -36,7 +36,7 @@ echo -e "${GREEN}✅ GCP Project: ${PROJECT_ID}${NC}"
 # Service configuration
 SERVICE_NAME="employee-discounts-agent"
 REGION="us-central1"
-MEMORY="512Mi"
+MEMORY="128Mi"
 CPU="1"
 TIMEOUT="3600"
 
@@ -85,7 +85,7 @@ gcloud run deploy ${SERVICE_NAME} \
     --timeout=${TIMEOUT} \
     --allow-unauthenticated \
     --set-env-vars="LOG_LEVEL=INFO" \
-    --no-gen2
+    
 
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✅ Deployed to Cloud Run successfully${NC}"

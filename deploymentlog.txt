@@ -1,0 +1,107 @@
+$ bash deploy.sh
+════════════════════════════════════════════════════════════
+   Employee Discounts Multi-Agent System - Cloud Run Deploy
+════════════════════════════════════════════════════════════
+
+✅ GCP Project: employee-discounts-agent
+
+📋 Deployment Configuration:
+  Service Name: employee-discounts-agent
+  Region: us-central1
+  Memory: 128Mi
+  CPU: 1
+  Timeout: 3600s
+
+🔨 Building Docker image...
+[+] Building 0.8s (15/15) FINISHED                                                                                                                                                                    docker:desktop-linux
+ => [internal] load build definition from Dockerfile                                                                                                                                                                  0.0s
+ => => transferring dockerfile: 764B                                                                                                                                                                                  0.0s 
+ => [internal] load metadata for docker.io/library/python:3.11-slim                                                                                                                                                   0.3s 
+ => [internal] load .dockerignore                                                                                                                                                                                     0.0s
+ => => transferring context: 2B                                                                                                                                                                                       0.0s 
+ => [ 1/10] FROM docker.io/library/python:3.11-slim@sha256:0b23cfb7425d065008b778022a17b1551c82f8b4866ee5a7a200084b7e2eafbf                                                                                           0.0s 
+ => => resolve docker.io/library/python:3.11-slim@sha256:0b23cfb7425d065008b778022a17b1551c82f8b4866ee5a7a200084b7e2eafbf                                                                                             0.0s 
+ => [internal] load build context                                                                                                                                                                                     0.0s 
+ => => transferring context: 1.50kB                                                                                                                                                                                   0.0s 
+ => CACHED [ 2/10] WORKDIR /app                                                                                                                                                                                       0.0s 
+ => CACHED [ 3/10] COPY requirements.txt .                                                                                                                                                                            0.0s 
+ => CACHED [ 4/10] RUN pip install --no-cache-dir -r requirements.txt                                                                                                                                                 0.0s 
+ => CACHED [ 5/10] COPY main.py .                                                                                                                                                                                     0.0s 
+ => CACHED [ 6/10] COPY agents.py .                                                                                                                                                                                   0.0s 
+ => CACHED [ 7/10] COPY tools.py .                                                                                                                                                                                    0.0s 
+ => CACHED [ 8/10] COPY cloud_storage.py .                                                                                                                                                                            0.0s 
+ => CACHED [ 9/10] COPY index.html .                                                                                                                                                                                  0.0s 
+ => CACHED [10/10] COPY pdfs/ ./pdfs/                                                                                                                                                                                 0.0s 
+ => exporting to image                                                                                                                                                                                                0.2s 
+ => => exporting layers                                                                                                                                                                                               0.0s
+ => => exporting manifest sha256:16a60c87859ea208d5097c16d65d087f6c4fc08734f6b2117f5508771af00eb7                                                                                                                     0.0s 
+ => => exporting config sha256:b7efb78186e92e7fac77bf7c5215bdeee4b576597726045153417233a0c570cd                                                                                                                       0.0s 
+ => => exporting attestation manifest sha256:1db5258637218fdc167b84d6d35346099fd7565b4fb2a397e33ad54a2bdc2387                                                                                                         0.0s 
+ => => exporting manifest list sha256:782e3d2aa4af8d1780e05b97cfbbd17fb7ca3affc382d3d332c84190f2daf977                                                                                                                0.0s 
+ => => naming to gcr.io/employee-discounts-agent/employee-discounts-agent:latest                                                                                                                                      0.0s 
+ => => unpacking to gcr.io/employee-discounts-agent/employee-discounts-agent:latest                                                                                                                                   0.0s
+✅ Docker image built successfully
+
+📤 Pushing to Container Registry...
+The push refers to repository [gcr.io/employee-discounts-agent/employee-discounts-agent]
+03f708436444: Layer already exists
+b496f45ce9f8: Layer already exists
+ec32d50320ba: Pushed
+78be00d9b514: Layer already exists
+905c5d955a80: Layer already exists
+0c8d55a45c0d: Layer already exists
+ee4e77f5ae67: Layer already exists
+3c289d9c2106: Layer already exists
+789e4d4f7756: Layer already exists
+08c28490a7c8: Layer already exists
+64faa99400e1: Layer already exists
+8cbc47ff628d: Layer already exists
+d85099f0969e: Layer already exists
+b46ae5ec9047: Layer already exists
+latest: digest: sha256:782e3d2aa4af8d1780e05b97cfbbd17fb7ca3affc382d3d332c84190f2daf977 size: 856
+✅ Image pushed successfully
+
+🚀 Deploying to Cloud Run...
+Deploying container to Cloud Run service [employee-discounts-agent] in project [employee-discounts-agent] region [us-central1]
+OK Deploying new service... Done.
+  OK Creating Revision...
+  OK Routing traffic...
+  OK Setting IAM Policy...
+Done.
+Service [employee-discounts-agent] revision [employee-discounts-agent-00001-vml] has been deployed and is serving 100 percent of traffic.
+Service URL: https://employee-discounts-agent-440559295915.us-central1.run.app
+✅ Deployed to Cloud Run successfully
+
+📍 Getting service URL...
+✅ Service URL: https://employee-discounts-agent-vdey2enjbq-uc.a.run.app
+
+✨ Testing deployment...
+✅ Health check passed
+Response: {"status":"healthy","service":"Employee Discounts Agent","agents_ready":true}
+
+════════════════════════════════════════════════════════════
+🎉 Deployment Complete!
+════════════════════════════════════════════════════════════
+
+📚 Available Endpoints:
+  UI:                 https://employee-discounts-agent-vdey2enjbq-uc.a.run.app
+  API Docs:           https://employee-discounts-agent-vdey2enjbq-uc.a.run.app/api/docs
+  Health Check:       https://employee-discounts-agent-vdey2enjbq-uc.a.run.app/health
+  Search Discounts:   https://employee-discounts-agent-vdey2enjbq-uc.a.run.app/search-discounts (POST)
+  All Discounts:      https://employee-discounts-agent-vdey2enjbq-uc.a.run.app/discounts/all (GET)
+  Categories:         https://employee-discounts-agent-vdey2enjbq-uc.a.run.app/discounts/categories (GET)
+
+🧪 Test the API:
+  curl -X POST https://employee-discounts-agent-vdey2enjbq-uc.a.run.app/search-discounts \033[0m
+    -H 'Content-Type: application/json' \033[0m
+    -d '{"query": "hotel"}' 
+
+📊 View Logs:
+  gcloud run logs read employee-discounts-agent --limit 100 --follow
+
+🔗 Cloud Console:
+  https://console.cloud.google.com/run/detail/us-central1/employee-discounts-agent
+
+════════════════════════════════════════════════════════════
+
+(venv) 

@@ -287,6 +287,11 @@
     </div>
     
     <script>
+        // Get the API base URL
+        const API_BASE = window.location.origin;
+        
+        console.log('API Base URL:', API_BASE);
+        
         async function search() {
             const query = document.getElementById('searchInput').value;
             if (!query.trim()) {
@@ -307,7 +312,14 @@
             clearError();
             
             try {
-                const response = await fetch('http://localhost:8080/discounts/all');
+                const url = `${API_BASE}/discounts/all`;
+                console.log('Fetching:', url);
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
                 const data = await response.json();
                 
                 showLoading(false);
@@ -315,6 +327,7 @@
             } catch (error) {
                 showLoading(false);
                 showError('Failed to load discounts: ' + error.message);
+                console.error('Error:', error);
             }
         }
         
@@ -323,13 +336,20 @@
             clearError();
             
             try {
-                const response = await fetch('http://localhost:8080/search-discounts', {
+                const url = `${API_BASE}/search-discounts`;
+                console.log('Searching:', url, 'Query:', query);
+                
+                const response = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ query: query })
                 });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
                 
                 const data = await response.json();
                 
@@ -343,6 +363,7 @@
             } catch (error) {
                 showLoading(false);
                 showError('Failed to search: ' + error.message);
+                console.error('Error:', error);
             }
         }
         
